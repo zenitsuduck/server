@@ -1,4 +1,13 @@
 const mineflayer = require('mineflayer')
+const http = require('http')
+
+// --- ЭТОТ БЛОК НУЖЕН ДЛЯ RENDER ---
+// Создаем фейковый веб-сервер, чтобы Render не выключал бота
+http.createServer((req, res) => {
+  res.write("I am alive");
+  res.end();
+}).listen(8080);
+// ---------------------------------
 
 const botArgs = {
   host: 'svatoi.hleb.play.hosting',
@@ -12,16 +21,13 @@ function pulse() {
   
   const bot = mineflayer.createBot(botArgs);
 
-  // Нам нужен только факт коннекта, ошибки игнорируем
   bot.on('error', () => {}); 
   bot.on('kicked', () => {});
 
-  // Закрываем через 5 сек, чтобы подготовить новый цикл
   setTimeout(() => {
     bot.quit();
   }, 5000);
 }
 
-// Запуск каждые 30 секунд (лимит сервера 60 сек)
 pulse();
 setInterval(pulse, 30000);
