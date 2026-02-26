@@ -1,24 +1,25 @@
 const mineflayer = require('mineflayer')
 const http = require('http')
 
-// 1. ЭТОТ БЛОК УБЕРЕТ ОШИБКУ "FAILED" И "TIMED OUT"
+// --- БЛОК ДЛЯ RENDER (ОБЯЗАТЕЛЬНО) ---
+// Создаем сервер, чтобы Render видел активность на порту
 const server = http.createServer((req, res) => {
   res.writeHead(200, { 'Content-Type': 'text/plain' });
-  res.end('Server is Running');
+  res.end('Bot is running');
 });
 
-// Автоматически подхватываем порт от Render
+// Слушаем порт, который выдает Render (обычно 10000) или 8080
 const PORT = process.env.PORT || 8080;
 server.listen(PORT, () => {
-  console.log(`Веб-интерфейс запущен на порту ${PORT}`);
+  console.log(`Веб-сервер запущен на порту ${PORT}`);
 });
+// -------------------------------------
 
-// 2. НАСТРОЙКИ БОТА
 const botArgs = {
   host: 'svatoi.hleb.play.hosting',
   port: 25565,
   username: 'Server_Guard',
-  version: '1.21.11' 
+  version: '1.21.1' 
 };
 
 function pulse() {
@@ -26,7 +27,7 @@ function pulse() {
   
   const bot = mineflayer.createBot(botArgs);
 
-  // Игнорируем ошибки (Fabric и т.д.), нам нужен только коннект
+  // Игнорируем ошибки (Fabric и т.д.), нам нужен только сам факт коннекта
   bot.on('error', () => {}); 
   bot.on('kicked', () => {});
 
@@ -36,6 +37,6 @@ function pulse() {
   }, 5000);
 }
 
-// Запуск каждые 30 секунд
+// Стучимся каждые 30 секунд
 pulse();
 setInterval(pulse, 30000);
